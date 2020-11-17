@@ -6,7 +6,7 @@
     event_data:
       command: /termostato
   action:
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*PANNELLO DI CONTROLLO*'
@@ -29,7 +29,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: term_stop
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: 'Ciao, alla prossima. Il termostato é in modalità {{ states.input_select.modalita_termostato.state }} . Ti ricordo che per gestire il termostato basta inviare /termostato'
@@ -45,7 +45,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: term_back
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*PANNELLO DI CONTROLLO*'
@@ -71,7 +71,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: stato
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       message: >-
 
@@ -112,7 +112,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: manuale
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       message: >-
 
@@ -149,7 +149,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: spento
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       message: >-
 
@@ -186,7 +186,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: auto
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       message: >-
 
@@ -227,7 +227,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: preriscaldamento
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       message: >-
 
@@ -268,7 +268,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: eco
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       message: >-
 
@@ -296,7 +296,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: temperatura
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: Seleziona la temperatura da impostare. Attualmente è impostata a {{ state_attr('climate.riscaldamento', 'temperature') }} °C
@@ -319,7 +319,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: orari
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: >-
@@ -345,7 +345,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: accensione
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       message: '*Orario accensione*'
 
@@ -369,7 +369,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: spegnimento
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       message: '*Orario spegnimento*'
 
@@ -394,7 +394,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +temp
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: Temperatura impostata {{ state_attr('climate.riscaldamento', 'temperature') }} °C
@@ -419,7 +419,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: -temp
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: Temperatura impostata {{ state_attr('climate.riscaldamento', 'temperature') }} °C
@@ -447,7 +447,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +ora_a
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*Orario accensione*'
@@ -474,7 +474,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: -ora_a
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*Orario accensione*'
@@ -500,7 +500,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +min_a
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*Orario accensione*'
@@ -526,7 +526,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +min_a
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*Orario accensione*'
@@ -552,7 +552,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +ora_s
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*Orario spegnimento*'
@@ -578,7 +578,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: -ora_s
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*Orario spegnimento*'
@@ -604,7 +604,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +min_s
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*Orario spegnimento*'
@@ -630,7 +630,7 @@
     data_template:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +min_s
-  - service: notify.telegram2
+  - service: notify.telegram
     data_template:
       title: '*CRONOTERMOSTATO*'
       message: '*Orario spegnimento*'
@@ -639,4 +639,4 @@
         - ' +H:/+ora_s,+M:/+min_s'
         - "{{ states.input_datetime.orario_spegnimento_term.state }}:/null"
         - ' -H:/-ora_s,-M:/-min_s'
-        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop' 
+        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
