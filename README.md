@@ -8,15 +8,10 @@ Questo package ha una serie di automazioni che permettono di comandare il totalm
 <p align="center"/><img src="https://github.com/mariocandida80/addon_telegram/blob/master/foto/pannello1.jpg" width="390"></p>
 
 Prerequisiti:<br>
-Aver configurato il <a href="https://www.paypal.com/paypalme/mariocandida">bot telegram</a><br>
-Attualmente queste automazioni funzionano solo con il package cronotermostato e non con quello con entità climate già installata. <br>
+Aver configurato il <a href="https://github.com/mariocandida80/addon_telegram/wiki">bot telegram</a><br>
+Attualmente questo package funziona solo con il package cronotermostato e non con quello con entità climate già installata. <br>
 
-Per installarlo basterà aggiungere al file configuration.yaml la seguente riga:<br>
-automation old: !include_dir_merge_list automations<br>
-Successivamente dovrete creare una cartella allo stesso livello di configuration.yaml e chiamarla automations.<br>
-Riavviate Home Assistant.<br>
-Dopo il riavvio copiate il file addon_telegram.yaml nella cartella appena creata, andate in impostazioni, controlli del server, ricarica le automazioni.<br>
-Aprite il vostro bot telegram e digitato /termostato e si aprirà il pannello di controllo.<br>
+Per installarlo basterà copiare il file addon_telegram.yaml nella cartella package e riavviare home assistant.<br>
 
 <p align="center"/> <b>Funzionamento</b> <br> </p>
 Per avviare il pannello vi basterà aprire il vostro bot telegram e digitare /termostato.<br>
