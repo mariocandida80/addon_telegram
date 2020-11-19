@@ -1,5 +1,14 @@
+homeassistant:
+  customize:
+    package.node_anchors:
+      customize: &customize
+        Package: 'Addon telegram per cronotermostato'
+        Versione: '1.1'
+        Autore: 'MARIO @tlod80'
+
+
+automation:
 - alias: telegram term
-  initial_state: 'on'
   trigger:
   - platform: event
     event_type: telegram_command
@@ -639,4 +648,4 @@
         - ' +H:/+ora_s,+M:/+min_s'
         - "{{ states.input_datetime.orario_spegnimento_term.state }}:/null"
         - ' -H:/-ora_s,-M:/-min_s'
-        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
+        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop' 
