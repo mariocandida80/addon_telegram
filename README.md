@@ -8,7 +8,7 @@ Questo package ha una serie di automazioni che permettono di comandare il totalm
 <p align="center"/><img src="https://github.com/mariocandida80/addon_telegram/blob/master/foto/pannello1.jpg" width="390"></p>
 
 Prerequisiti:<br>
-Aver configurato il bot telegram<br>
+Aver configurato il <a href="https://www.paypal.com/paypalme/mariocandida">bot telegram</a><br>
 Attualmente queste automazioni funzionano solo con il package cronotermostato e non con quello con entità climate già installata. <br>
 
 Per installarlo basterà aggiungere al file configuration.yaml la seguente riga:<br>
