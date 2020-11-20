@@ -10,8 +10,8 @@ Questo package ha una serie di automazioni che permettono di comandare il totalm
 Prerequisiti:<br>
 Aver configurato il <a href="https://github.com/mariocandida80/addon_telegram/wiki">bot telegram</a><br>
 
-
 Per installarlo basterà copiare il file addon_telegram.yaml nella cartella package e riavviare home assistant.<br>
+Per chi ha il package no-climate, basterà aprire il file addon_telegram con un editor e sostituire tutti i climate.riscaldamento con il prorio.<br>
 
 <p align="center"/> <b>Funzionamento</b> <br> </p>
 Per avviare il pannello vi basterà aprire il vostro bot telegram e digitare /termostato.<br>
