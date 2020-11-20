@@ -9,7 +9,7 @@ Questo package ha una serie di automazioni che permettono di comandare il totalm
 
 Prerequisiti:<br>
 Aver configurato il <a href="https://github.com/mariocandida80/addon_telegram/wiki">bot telegram</a><br>
-Attualmente questo package funziona solo con il package cronotermostato e non con quello con entità climate già installata. <br>
+
 
 Per installarlo basterà copiare il file addon_telegram.yaml nella cartella package e riavviare home assistant.<br>
 
