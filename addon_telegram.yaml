@@ -3,46 +3,48 @@ homeassistant:
     package.node_anchors:
       customize: &customize
         Package: 'Addon telegram per cronotermostato'
-        Versione: '1.1'
+        Versione: '1.2'
         Autore: 'MARIO @tlod80'
+   
 
 
-automation:
+automation:        
 - alias: telegram term
   trigger:
   - platform: event
     event_type: telegram_command
     event_data:
       command: /termostato
-  action:
-  - service: notify.telegram
+  action: 
+  - service: telegram_bot.send_message
     data_template:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*PANNELLO DI CONTROLLO*'
-      data:
-        inline_keyboard:
-        - '{{ "\U0001F3E0" }} Stato:/stato,{{ "\U0001F525" }} Manuale:/manuale'
+      inline_keyboard:
+        - '{{ "\U0001F3E0" }} Stato:/stato,{{ "\U0001F525" }} Manuale:/manuale' 
         - '{{ "\U0001F916" }} Auto:/auto,{{ "\U0001F7E0" }} Preriscaldamento:/preriscaldamento'
         - '{{ "\U0001F4F4" }} Spento:/spento,{{ "\U00002618" }} Eco:/eco'
         - '{{ "\U00002744" }} Imposta temperatura:/temperatura,{{ "\U0001F550" }} Imposta orari:/orari'
         - '{{ "\U0001F51A" }} Uscita:/term_stop'
-
+        
 - alias: telegram off term
-  trigger:
+  trigger: 
   - platform: event
     event_type: telegram_callback
     event_data:
       command: /term_stop
   action:
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: term_stop
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: 'Ciao, alla prossima. Il termostato é in modalità {{ states.input_select.modalita_termostato.state }} . Ti ricordo che per gestire il termostato basta inviare /termostato'
-
+ 
 - alias: telegram start callback term
   trigger:
   - platform: event
@@ -51,22 +53,22 @@ automation:
       data: /term_back
   action:
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: term_back
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*PANNELLO DI CONTROLLO*'
-      data:
-        inline_keyboard:
-        - '{{ "\U0001F3E0" }} Stato:/stato,{{ "\U0001F525" }} Manuale:/manuale'
+      inline_keyboard:
+        - '{{ "\U0001F3E0" }} Stato:/stato,{{ "\U0001F525" }} Manuale:/manuale' 
         - '{{ "\U0001F916" }} Auto:/auto,{{ "\U0001F7E0" }} Preriscaldamento:/preriscaldamento'
         - '{{ "\U0001F4F4" }} Spento:/spento,{{ "\U00002618" }} Eco:/eco'
         - '{{ "\U00002744" }} Imposta temperatura:/temperatura,{{ "\U0001F550" }} Imposta orari:/orari'
         - '{{ "\U0001F51A" }} Uscita:/term_stop'
-
-
+     
+      
 ################ STATO
 
 - alias: stato term telegram
@@ -77,15 +79,18 @@ automation:
       data: /stato
   action:
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: stato
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
+      inline_keyboard:
+        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'      
       message: >-
-
+     
         *-----------STATO TERMOSTATO-----------*
-
+   
         Modalità termostato {{ states.input_select.modalita_termostato.state }}
 
         Temperatura casa {{ states.sensor.temperatura_attuale.state }} °C
@@ -95,10 +100,9 @@ automation:
         Orario accensione impostato: {{ states.input_datetime.orario_accensione_term.state }}
 
         Orario spegnimento impostato: {{ states.input_datetime.orario_spegnimento_term.state }}
-
-      data:
-        inline_keyboard:
-        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
+        
+      
+      
 
 ################ MANUALE
 
@@ -118,24 +122,26 @@ automation:
       entity_id: input_select.modalita_termostato_old
       option: MANUALE
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: manuale
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
+      inline_keyboard:
+        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
       message: >-
-
+     
         *-----------STATO TERMOSTATO-----------*
-
+     
         Modalità termostato {{ states.input_select.modalita_termostato.state }}
 
         Temperatura casa {{ states.sensor.temperatura_attuale.state }} °C
 
         Temperatura impostata {{ state_attr('climate.riscaldamento', 'temperature') }} °C
+        
 
-      data:
-        inline_keyboard:
-        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
+        
 
 ################ OFF
 
@@ -155,25 +161,27 @@ automation:
       entity_id: input_select.modalita_termostato_old
       option: 'OFF'
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: spento
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
+      inline_keyboard:
+        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
       message: >-
-
+     
         *-----------STATO TERMOSTATO-----------*
-
+     
         Modalità termostato {{ states.input_select.modalita_termostato.state }}
 
         Temperatura casa {{ states.sensor.temperatura_attuale.state }} °C
 
         Temperatura impostata {{ state_attr('climate.riscaldamento', 'temperature') }} °C
-
-      data:
-        inline_keyboard:
-        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
-
+        
+      
+        
+        
 ################ AUTO
 
 - alias: auto term telegram
@@ -192,15 +200,18 @@ automation:
       entity_id: input_select.modalita_termostato_old
       option: AUTO
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: auto
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
+      inline_keyboard:
+        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
       message: >-
-
+     
         *-----------STATO TERMOSTATO-----------*
-
+     
         Modalità termostato {{ states.input_select.modalita_termostato.state }}
 
         Temperatura casa {{ states.sensor.temperatura_attuale.state }} °C
@@ -210,11 +221,10 @@ automation:
         Orario accensione impostato: {{ states.input_datetime.orario_accensione_term.state }}
 
         Orario spegnimento impostato: {{ states.input_datetime.orario_spegnimento_term.state }}
-
-      data:
-        inline_keyboard:
-        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
-
+        
+     
+       
+        
 ################ PRERISCALDAMENTO
 
 - alias: preriscaldamento term telegram
@@ -231,17 +241,20 @@ automation:
   - service: input_select.select_option
     data:
       entity_id: input_select.modalita_termostato_old
-      option: PRERISCALDAMENTO
+      option: PRERISCALDAMENTO  
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: preriscaldamento
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
+      inline_keyboard:
+        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
       message: >-
-
+     
         *-----------STATO TERMOSTATO-----------*
-
+     
         Modalità termostato {{ states.input_select.modalita_termostato.state }}
 
         Temperatura casa {{ states.sensor.temperatura_attuale.state }} °C
@@ -251,11 +264,10 @@ automation:
         Orario accensione impostato: {{ states.input_datetime.orario_accensione_term.state }}
 
         Orario spegnimento impostato: {{ states.input_datetime.orario_spegnimento_term.state }}
+        
 
-      data:
-        inline_keyboard:
-        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
-
+        
+        
 ################ ECO
 
 - alias: eco term telegram
@@ -274,26 +286,28 @@ automation:
       entity_id: input_select.modalita_termostato_old
       option: ECO
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: eco
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
+      inline_keyboard:
+        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
       message: >-
-
+     
         *-----------STATO TERMOSTATO-----------*
-
+     
         Modalità termostato {{ states.input_select.modalita_termostato.state }}
 
         Temperatura casa {{ states.sensor.temperatura_attuale.state }} °C
 
         Temperatura impostata {{ state_attr('climate.riscaldamento', 'temperature') }} °C
+        
+ 
+        
 
-      data:
-        inline_keyboard:
-        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
-
-####menu temperatura
+####menu temperatura       
 - alias: telegram menu temp term
   trigger:
   - platform: event
@@ -302,21 +316,23 @@ automation:
       data: /temperatura
   action:
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: temperatura
-  - service: notify.telegram
-    data_template:
-      title: '*CRONOTERMOSTATO*'
-      message: Seleziona la temperatura da impostare. Attualmente è impostata a {{ state_attr('climate.riscaldamento', 'temperature') }} °C
-      data:
-        inline_keyboard:
-        - ' +:/+temp'
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
+      inline_keyboard:
+        - ' +:/+temp' 
         - "{{ state_attr('climate.riscaldamento', 'temperature') }}:/null"
         - ' -:/-temp'
         - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
+      title: '*CRONOTERMOSTATO*'
+      message: Seleziona la temperatura da impostare. Attualmente è impostata a {{ state_attr('climate.riscaldamento', 'temperature') }} °C
+      
+        
 
-####menu orari
+####menu orari       
 - alias: telegram menu orari term
   trigger:
   - platform: event
@@ -325,24 +341,26 @@ automation:
       data: /orari
   action:
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: orari
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
+      inline_keyboard:
+        - '{{ "\U0001F550" }} Orario accensione:/accensione,{{ "\U0001F550" }} Orario spegnimento:/spegnimento' 
+        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'    
       title: '*CRONOTERMOSTATO*'
       message: >-
         *MENU IMPOSTAZIONE ORARI*
-
+        
         Orario accensione impostato: {{ states.input_datetime.orario_accensione_term.state }}
-
+        
         Orario spegnimento impostato: {{ states.input_datetime.orario_spegnimento_term.state }}
-      data:
-        inline_keyboard:
-        - '{{ "\U0001F550" }} Orario accensione:/accensione,{{ "\U0001F550" }} Orario spegnimento:/spegnimento'
-        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
 
-####menu accensione
+        
+        
+####menu accensione       
 - alias: telegram menu accensione term
   trigger:
   - platform: event
@@ -351,22 +369,22 @@ automation:
       data: /accensione
   action:
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: accensione
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       message: '*Orario accensione*'
-
-      data:
-        inline_keyboard:
-          - ' +H:/+ora_a,+M:/+min_a'
-          - "{{ states.input_datetime.orario_accensione_term.state }}:/null"
-          - ' -H:/-ora_a,-M:/-min_a'
-          - '{{ "\U0001F51B" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
+      inline_keyboard:
+        - ' +H:/+ora_a,+M:/+min_a' 
+        - "{{ states.input_datetime.orario_accensione_term.state }}:/null"
+        - ' -H:/-ora_a,-M:/-min_a'          
+        - '{{ "\U0001F51B" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop' 
 
 
-####menu spegnimento
+
+####menu spegnimento       
 - alias: telegram menu spegnimento term
   trigger:
   - platform: event
@@ -375,21 +393,20 @@ automation:
       data: /spegnimento
   action:
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: spegnimento
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       message: '*Orario spegnimento*'
+      inline_keyboard:
+        - ' +H:/+ora_s,+M:/+min_s' 
+        - "{{ states.input_datetime.orario_spegnimento_term.state }}:/null"
+        - ' -H:/-ora_s,-M:/-min_s'
+        - '{{ "\U0001F51B" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'     
 
-      data:
-        inline_keyboard:
-          - ' +H:/+ora_s,+M:/+min_s'
-          - "{{ states.input_datetime.orario_spegnimento_term.state }}:/null"
-          - ' -H:/-ora_s,-M:/-min_s'
-          - '{{ "\U0001F51B" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
-
-####temperatura
+####temperatura   
 - alias: telegram temperatura + term
   trigger:
   - platform: event
@@ -400,21 +417,21 @@ automation:
   - service: input_number.increment
     entity_id: input_number.temperatura_termostato
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +temp
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: Temperatura impostata {{ state_attr('climate.riscaldamento', 'temperature') }} °C
-
-      data:
-        inline_keyboard:
-        - ' +:/+temp'
+      inline_keyboard:
+        - ' +:/+temp' 
         - "{{ state_attr('climate.riscaldamento', 'temperature') }}:/null"
         - ' -:/-temp'
-        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
-
+        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop' 
+        
+ 
 - alias: telegram prova - term
   trigger:
   - platform: event
@@ -425,21 +442,22 @@ automation:
   - service: input_number.decrement
     entity_id: input_number.temperatura_termostato
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: -temp
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: Temperatura impostata {{ state_attr('climate.riscaldamento', 'temperature') }} °C
-      data:
-        inline_keyboard:
-        - ' +:/+temp'
+      inline_keyboard:
+        - ' +:/+temp' 
         - "{{ state_attr('climate.riscaldamento', 'temperature') }}:/null"
         - ' -:/-temp'
-        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop'
+        - '{{ "\U0001F519" }} Indietro:/term_back,{{ "\U0001F51A" }} Uscita:/term_stop' 
 
-####accensione
+        
+####accensione    
 
 - alias: telegram + ora acc term
   trigger:
@@ -449,25 +467,26 @@ automation:
       data: /+ora_a
   action:
   - service: input_datetime.set_datetime
-    data_template:
+    data:
       entity_id: input_datetime.orario_accensione_term
       time: "{{ (((state_attr('input_datetime.orario_accensione_term', 'timestamp') | int ) +3600) | timestamp_custom('%H:%M', false)) }}"
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +ora_a
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*Orario accensione*'
-
-      data:
-        inline_keyboard:
-        - ' +H:/+ora_a,+M:/+min_a'
+      inline_keyboard:
+        - ' +H:/+ora_a,+M:/+min_a' 
         - "{{ states.input_datetime.orario_accensione_term.state }}:/null"
         - ' -H:/-ora_a,-M:/-min_a'
-        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
+        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'   
 
+        
+        
 - alias: telegram - ora acc term
   trigger:
   - platform: event
@@ -476,23 +495,24 @@ automation:
       data: /-ora_a
   action:
   - service: input_datetime.set_datetime
-    data_template:
+    data:
       entity_id: input_datetime.orario_accensione_term
       time: "{{ (((state_attr('input_datetime.orario_accensione_term', 'timestamp') | int ) -3600) | timestamp_custom('%H:%M', false)) }}"
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: -ora_a
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*Orario accensione*'
-      data:
-        inline_keyboard:
-        - ' +H:/+ora_a,+M:/+min_a'
+      inline_keyboard:
+        - ' +H:/+ora_a,+M:/+min_a' 
         - "{{ states.input_datetime.orario_accensione_term.state }}:/null"
         - ' -H:/-ora_a,-M:/-min_a'
-        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
+        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop' 
+        
 
 - alias: telegram + min acc term
   trigger:
@@ -502,23 +522,25 @@ automation:
       data: /+min_a
   action:
   - service: input_datetime.set_datetime
-    data_template:
+    data:
       entity_id: input_datetime.orario_accensione_term
       time: "{{ (((state_attr('input_datetime.orario_accensione_term', 'timestamp') | int ) +900) | timestamp_custom('%H:%M', false)) }}"
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +min_a
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*Orario accensione*'
-      data:
-        inline_keyboard:
-        - ' +H:/+ora_a,+M:/+min_a'
+      inline_keyboard:
+        - ' +H:/+ora_a,+M:/+min_a' 
         - "{{ states.input_datetime.orario_accensione_term.state }}:/null"
         - ' -H:/-ora_a,-M:/-min_a'
-        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
+        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop' 
+
+        
 
 - alias: telegram - min acc term
   trigger:
@@ -528,23 +550,24 @@ automation:
       data: /-min_a
   action:
   - service: input_datetime.set_datetime
-    data_template:
+    data:
       entity_id: input_datetime.orario_accensione_term
       time: "{{ (((state_attr('input_datetime.orario_accensione_term', 'timestamp') | int ) -900) | timestamp_custom('%H:%M', false)) }}"
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +min_a
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*Orario accensione*'
-      data:
-        inline_keyboard:
-        - ' +H:/+ora_a,+M:/+min_a'
+      inline_keyboard:
+        - ' +H:/+ora_a,+M:/+min_a' 
         - "{{ states.input_datetime.orario_accensione_term.state }}:/null"
         - ' -H:/-ora_a,-M:/-min_a'
-        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
+        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop' 
+        
 
 - alias: telegram + ora spegn term
   trigger:
@@ -554,24 +577,25 @@ automation:
       data: /+ora_s
   action:
   - service: input_datetime.set_datetime
-    data_template:
+    data:
       entity_id: input_datetime.orario_spegnimento_term
       time: "{{ (((state_attr('input_datetime.orario_spegnimento_term', 'timestamp') | int ) +3600) | timestamp_custom('%H:%M', false)) }}"
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +ora_s
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*Orario spegnimento*'
-      data:
-        inline_keyboard:
-        - ' +H:/+ora_s,+M:/+min_s'
+      inline_keyboard:
+        - ' +H:/+ora_s,+M:/+min_s' 
         - "{{ states.input_datetime.orario_spegnimento_term.state }}:/null"
         - ' -H:/-ora_s,-M:/-min_s'
-        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
-
+        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'   
+        
+        
 - alias: telegram - ora spegn term
   trigger:
   - platform: event
@@ -580,23 +604,24 @@ automation:
       data: /-ora_s
   action:
   - service: input_datetime.set_datetime
-    data_template:
+    data:
       entity_id: input_datetime.orario_spegnimento_term
       time: "{{ (((state_attr('input_datetime.orario_spegnimento_term', 'timestamp') | int ) -3600) | timestamp_custom('%H:%M', false)) }}"
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: -ora_s
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*Orario spegnimento*'
-      data:
-        inline_keyboard:
-        - ' +H:/+ora_s,+M:/+min_s'
+      inline_keyboard:
+        - ' +H:/+ora_s,+M:/+min_s' 
         - "{{ states.input_datetime.orario_spegnimento_term.state }}:/null"
         - ' -H:/-ora_s,-M:/-min_s'
-        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
+        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop' 
+        
 
 - alias: telegram + min spegn term
   trigger:
@@ -606,23 +631,24 @@ automation:
       data: /+min_s
   action:
   - service: input_datetime.set_datetime
-    data_template:
+    data:
       entity_id: input_datetime.orario_spegnimento_term
       time: "{{ (((state_attr('input_datetime.orario_spegnimento_term', 'timestamp') | int ) +900) | timestamp_custom('%H:%M', false)) }}"
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +min_s
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*Orario spegnimento*'
-      data:
-        inline_keyboard:
-        - ' +H:/+ora_s,+M:/+min_s'
+      inline_keyboard:
+        - ' +H:/+ora_s,+M:/+min_s' 
         - "{{ states.input_datetime.orario_spegnimento_term.state }}:/null"
         - ' -H:/-ora_s,-M:/-min_s'
-        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop'
+        - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop' 
+        
 
 - alias: telegram - min spegn term
   trigger:
@@ -632,20 +658,21 @@ automation:
       data: /-min_s
   action:
   - service: input_datetime.set_datetime
-    data_template:
+    data:
       entity_id: input_datetime.orario_spegnimento_term
       time: "{{ (((state_attr('input_datetime.orario_spegnimento_term', 'timestamp') | int ) -900) | timestamp_custom('%H:%M', false)) }}"
   - service: telegram_bot.answer_callback_query
-    data_template:
+    data:
       callback_query_id: '{{ trigger.event.data.id }}'
       message: +min_s
-  - service: notify.telegram
-    data_template:
+  - service: telegram_bot.send_message
+    data:
+      target: '{{ trigger.event.data.user_id }}'
       title: '*CRONOTERMOSTATO*'
       message: '*Orario spegnimento*'
-      data:
-        inline_keyboard:
-        - ' +H:/+ora_s,+M:/+min_s'
+      inline_keyboard:
+        - ' +H:/+ora_s,+M:/+min_s' 
         - "{{ states.input_datetime.orario_spegnimento_term.state }}:/null"
         - ' -H:/-ora_s,-M:/-min_s'
         - '{{ "\U0001F519" }} Indietro:/orari,{{ "\U0001F51A" }} Uscita:/term_stop' 
+        
